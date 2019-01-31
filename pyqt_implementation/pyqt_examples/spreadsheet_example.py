@@ -13,7 +13,7 @@ from collections import ChainMap
 import math
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QTableWidget,
+from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow, QTableWidget,
         QTableWidgetItem, QItemDelegate, QLineEdit)
 
 
@@ -102,7 +102,7 @@ class SpreadSheetItem(QTableWidgetItem):
         return str(self.value)
 
 
-class SpreadSheet(QMainWindow):
+class SpreadSheet(QWidget):
     def __init__(self, rows, cols, parent=None):
         super(SpreadSheet, self).__init__(parent)
 
