@@ -102,7 +102,7 @@ class SpreadSheetItem(QTableWidgetItem):
         return str(self.value)
 
 
-class SpreadSheet(QWidget):
+class SpreadSheet(QMainWindow):
     def __init__(self, rows, cols, parent=None):
         super(SpreadSheet, self).__init__(parent)
 
