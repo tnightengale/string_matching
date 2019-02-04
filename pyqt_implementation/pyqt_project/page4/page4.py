@@ -8,7 +8,8 @@ Created on Thu Jan 31 10:04:29 2019
 
 #from PyQt5 import QtGui
 #from PyQt5.QtCore import pyqtProperty
-from page4.widgets4 import QWizardPage, QITableWidget, QLabel, QGridLayout, QVBoxLayout, QPushButton, QGroupBox
+from page4.widgets4 import (QWizardPage, QITableWidget, QLabel, QGridLayout, 
+                            QVBoxLayout, QPushButton, QGroupBox)
 
 
 class Page4(QWizardPage):
