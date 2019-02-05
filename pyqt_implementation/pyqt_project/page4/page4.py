@@ -10,7 +10,8 @@ Created on Thu Jan 31 10:04:29 2019
 #from PyQt5.QtCore import pyqtProperty
 from page4.widgets4 import (QWizardPage, QITableWidget, QLabel, QGridLayout, 
                             QVBoxLayout, QPushButton, QGroupBox,PandasModel,
-                            QTableView, QTableWidgetItem)
+                            QTableView, QTableWidgetItem, QtCore, QMessageBox)
+
 import pandas as pd
 
 '''
@@ -30,8 +31,13 @@ Figure out how to map selected cells in table_1 to selected cells in table_2.
 '''
 
 class Page4(QWizardPage):
+    
+    error = QtCore.pyqtSignal()
+    
+    
     def __init__(self):
         super().__init__()
+        
         self.pandaframe = pd.read_excel(r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock3.xlsx")
         self.initWidgets()
         self.initLayout()
@@ -61,8 +67,12 @@ class Page4(QWizardPage):
         self.button_4.setText('export table')
         self.button_4.clicked.connect(self.exportToFrame)
         
+        self.button_5 = QPushButton()
+        self.button_5.setText('Add Column')
+        self.button_5.clicked.connect(self.addColumn)
+        
         self.table_1 = QTableView()
-        self.table_2 = QITableWidget(3,3)
+        self.table_2 = QITableWidget()
         self.model = PandasModel(self.pandaframe)
         self.table_1.setModel(self.model)
         self.table_1.setShowGrid(True)
@@ -80,6 +90,7 @@ class Page4(QWizardPage):
         b_layout.addWidget(self.button_2)
         b_layout.addWidget(self.button_3)
         b_layout.addWidget(self.button_4)
+        b_layout.addWidget(self.button_5)
         b_group.setLayout(b_layout)
         
         layout = QGridLayout()
@@ -89,6 +100,24 @@ class Page4(QWizardPage):
         layout.addWidget(self.table_2,1,2)
         layout.addWidget(b_group,1,1)
         self.setLayout(layout)
+    
+    def addColumn(self):
+        current_column = self.table_2.columnCount()
+        self.table_2.insertColumn(current_column)
+        
+        selected_labels = self.table_1.selectedIndexes()
+        
+        try:
+            # ensure only one cell selected as header
+            print(f'selected labels are: {selected_labels} and len is: {len(selected_labels)}')
+            assert(len(selected_labels) == 1)
+            selected_label = str(selected_labels[0].data())
+            self.table_2.setHorizontalHeaderItem(current_column,QTableWidgetItem(selected_label))
+            
+        except AssertionError:
+            self.error.connect(self.showError)
+            self.error.emit()
+            #self.showError()
         
     def printIndex(self):
         #print(f'index is {[self.table_1.indexAt(a) for a in self.table_1.selectedIndexes()]}')
@@ -118,5 +147,12 @@ class Page4(QWizardPage):
         frame = pd.DataFrame(data)
         print(data)
         print(frame)
-        
-        
+    
+    def showError(self):
+       msg = QMessageBox()
+       msg.setIcon(QMessageBox.Warning)
+    
+       msg.setText("You cannot do that!")
+       msg.setWindowTitle("Error")
+       msg.setStandardButtons(QMessageBox.Ok)
+       

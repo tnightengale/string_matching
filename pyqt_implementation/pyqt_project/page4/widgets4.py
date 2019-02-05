@@ -14,8 +14,8 @@ from PyQt5.QtWidgets import (QWizardPage, QMainWindow, QGridLayout, QWidget, QTe
                              QTableWidget, QTableWidgetItem, QTableView)
 
 class QITableWidget(QTableWidget):
-    def __init__(self, rows, columns):
-        super().__init__(rows, columns)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         # Add additional funcitonalityA
 
 class PandasModel(QtCore.QAbstractTableModel):
