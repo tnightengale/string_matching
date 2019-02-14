@@ -32,12 +32,12 @@ Figure out how to map selected cells in table_1 to selected cells in table_2.
 
 class Page4(QWizardPage):
     
-    error = QtCore.pyqtSignal()
+    #error = QtCore.pyqtSignal()
     
     
     def __init__(self):
         super().__init__()
-        
+        #self.error.connect(self.showError)
         self.pandaframe = pd.read_excel(r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock3.xlsx")
         self.initWidgets()
         self.initLayout()
@@ -71,6 +71,10 @@ class Page4(QWizardPage):
         self.button_5.setText('Add Column')
         self.button_5.clicked.connect(self.addColumn)
         
+        self.button_6 = QPushButton()
+        self.button_6.setText('Add Rows')
+        self.button_6.clicked.connect(self.addRow)
+        
         self.table_1 = QTableView()
         self.table_2 = QITableWidget()
         self.model = PandasModel(self.pandaframe)
@@ -91,6 +95,7 @@ class Page4(QWizardPage):
         b_layout.addWidget(self.button_3)
         b_layout.addWidget(self.button_4)
         b_layout.addWidget(self.button_5)
+        b_layout.addWidget(self.button_6)
         b_group.setLayout(b_layout)
         
         layout = QGridLayout()
@@ -103,21 +108,26 @@ class Page4(QWizardPage):
     
     def addColumn(self):
         current_column = self.table_2.columnCount()
-        self.table_2.insertColumn(current_column)
-        
         selected_labels = self.table_1.selectedIndexes()
-        
-        try:
-            # ensure only one cell selected as header
+        try: # ensure only one cell selected as header
             print(f'selected labels are: {selected_labels} and len is: {len(selected_labels)}')
             assert(len(selected_labels) == 1)
             selected_label = str(selected_labels[0].data())
+            self.table_2.insertColumn(current_column)
             self.table_2.setHorizontalHeaderItem(current_column,QTableWidgetItem(selected_label))
-            
         except AssertionError:
-            self.error.connect(self.showError)
-            self.error.emit()
-            #self.showError()
+            print('except triggered')
+            error = 'You cannot add more than one column at a time.'
+            self.showError(error)
+    
+    def addRow(self):
+        current_row = self.table_2.rowCount()
+        self.table_2.insertRow(current_row)
+        
+    def deleteRow(self):
+        current_row = self.table_2.rowCount()
+        self.table_2.removeRow(current_row)
+        
         
     def printIndex(self):
         #print(f'index is {[self.table_1.indexAt(a) for a in self.table_1.selectedIndexes()]}')
@@ -128,8 +138,14 @@ class Page4(QWizardPage):
         print(f'current item is: {self.table_2.currentItem()}')
     
     def setWidgets(self):
-        for cordinate in [(a.row(),a.column()) for a in self.table_1.selectedIndexes()]:
-            self.table_2.setItem(cordinate[0],cordinate[1],QTableWidgetItem(str(cordinate)))
+        tb_1_cordinates = [(a.row(),a.column()) for a in self.table_1.selectedIndexes()]
+        tb_2_cordinates = [(a.row(),a.column()) for a in self.table_2.selectedIndexes()]
+        
+        
+        #for cordinate in tb_2_cordinates:
+        print(f'table 1 cordinates are: {tb_1_cordinates}')
+        print(f'table 2 cordinates are: {tb_2_cordinates}')
+            #self.table_2.setItem(tb_1_cordinates[0],tb_1_cordinates[1],QTableWidgetItem(str(cordinate)))
             
     def exportToFrame(self):
         data = []
@@ -148,11 +164,11 @@ class Page4(QWizardPage):
         print(data)
         print(frame)
     
-    def showError(self):
+    def showError(self, error_message):
        msg = QMessageBox()
        msg.setIcon(QMessageBox.Warning)
-    
-       msg.setText("You cannot do that!")
+       msg.setText(error_message)
        msg.setWindowTitle("Error")
        msg.setStandardButtons(QMessageBox.Ok)
+       msg.exec_()
        
