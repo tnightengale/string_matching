@@ -10,7 +10,8 @@ Created on Thu Jan 31 10:04:29 2019
 #from PyQt5.QtCore import pyqtProperty
 from page4.widgets4 import (QWizardPage, QITableWidget, QLabel, QGridLayout, 
                             QVBoxLayout, QPushButton, QGroupBox,PandasModel,
-                            QTableView, QTableWidgetItem, QtCore, QMessageBox)
+                            QTableView, QTableWidgetItem, QtCore, QMessageBox,
+                            cycle)
 
 import pandas as pd
 
@@ -33,12 +34,14 @@ Figure out how to map selected cells in table_1 to selected cells in table_2.
 class Page4(QWizardPage):
     
     #error = QtCore.pyqtSignal()
-    
+    windows_path = r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock3.xlsx"
+    mac_path = r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock3.xlsx'
     
     def __init__(self):
         super().__init__()
         #self.error.connect(self.showError)
-        self.pandaframe = pd.read_excel(r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock3.xlsx")
+        #self.pandaframe = pd.read_excel(self.windows_path)
+        self.pandaframe = pd.read_excel(self.mac_path)
         self.initWidgets()
         self.initLayout()
         
@@ -140,12 +143,15 @@ class Page4(QWizardPage):
     def setWidgets(self):
         tb_1_cordinates = [(a.row(),a.column()) for a in self.table_1.selectedIndexes()]
         tb_2_cordinates = [(a.row(),a.column()) for a in self.table_2.selectedIndexes()]
-        
-        
-        #for cordinate in tb_2_cordinates:
-        print(f'table 1 cordinates are: {tb_1_cordinates}')
-        print(f'table 2 cordinates are: {tb_2_cordinates}')
-            #self.table_2.setItem(tb_1_cordinates[0],tb_1_cordinates[1],QTableWidgetItem(str(cordinate)))
+        try:
+            assert(len(tb_1_cordinates) <= len(tb_2_cordinates))
+            for c1,c2 in zip(cycle(tb_1_cordinates),tb_2_cordinates):
+                self.table_2.setItem(c2[0],c2[1],QTableWidgetItem(str(c1)))
+            print(f'table 1 cordinates are: {tb_1_cordinates}')
+            print(f'table 2 cordinates are: {tb_2_cordinates}')
+        except AssertionError:
+            error = 'Selected cells in importing table exceed selected cells in exporting table.'
+            self.showError(error)
             
     def exportToFrame(self):
         data = []
@@ -153,9 +159,9 @@ class Page4(QWizardPage):
                 rowdata = []
                 for column in range(self.table_2.columnCount()):
                     item = self.table_2.item(row, column)
+                    print(item) ##
                     if item is not None:
-                        rowdata.append(
-                            str(item.text()))
+                        rowdata.append(str(item.text()))
                     else:
                         rowdata.append('')
                 data.append(rowdata)
