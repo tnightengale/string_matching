@@ -8,10 +8,10 @@ Created on Thu Jan 31 10:04:29 2019
 
 #from PyQt5 import QtGui
 #from PyQt5.QtCore import pyqtProperty
-from page4.widgets4 import (QWizardPage, QITableWidget, QLabel, QGridLayout, 
+from page4.widgets4 import (QWizardPage, QTableWidget, QLabel, QGridLayout, 
                             QVBoxLayout, QPushButton, QGroupBox,PandasModel,
                             QTableView, QTableWidgetItem, QtCore, QMessageBox,
-                            cycle)
+                            cycle, QCSVTableWidget, alphabetize, QExportItem)
 
 import pandas as pd
 
@@ -37,6 +37,11 @@ class Page4(QWizardPage):
     windows_path = r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock3.xlsx"
     mac_path = r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock3.xlsx'
     
+    file_paths = [r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock1.xlsx',
+                  r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock2.xlsx',
+                  r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock3.xlsx']
+    write_path = r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/test.csv'
+    
     def __init__(self):
         super().__init__()
         #self.error.connect(self.showError)
@@ -55,20 +60,20 @@ class Page4(QWizardPage):
         self.label_2.setText("Exporting Table")
         
         self.button_1 = QPushButton()
-        self.button_1.setText('Print table 1 cell index')
-        self.button_1.clicked.connect(self.printIndex)
+        self.button_1.setText('Delete Row')
+        self.button_1.clicked.connect(self.deleteRow)
         
         self.button_2 = QPushButton()
-        self.button_2.setText('Print table 1 cell index')
-        self.button_2.clicked.connect(self.widgetIndex)
+        self.button_2.setText('Delete Column')
+        self.button_2.clicked.connect(self.deleteColumn)
         
         self.button_3 = QPushButton()
-        self.button_3.setText('Set Selected cordinates')
+        self.button_3.setText('Set Selected coordinates')
         self.button_3.clicked.connect(self.setWidgets)
         
         self.button_4 = QPushButton()
         self.button_4.setText('export table')
-        self.button_4.clicked.connect(self.exportToFrame)
+        self.button_4.clicked.connect(self.exportToCSV)
         
         self.button_5 = QPushButton()
         self.button_5.setText('Add Column')
@@ -78,11 +83,13 @@ class Page4(QWizardPage):
         self.button_6.setText('Add Rows')
         self.button_6.clicked.connect(self.addRow)
         
-        self.table_1 = QTableView()
-        self.table_2 = QITableWidget()
+        self.table_1 = QCSVTableWidget(self.pandaframe)
+        self.table_1.setHorizontalHeaderLabels(alphabetize(self.table_1._cols))
+        #self.table_1 = QTableView()
+        self.table_2 = QTableWidget()
         self.model = PandasModel(self.pandaframe)
-        self.table_1.setModel(self.model)
-        self.table_1.setShowGrid(True)
+        #self.table_1.setModel(self.model)
+        #self.table_1.setShowGrid(True)
         
         # create excel style cell col and index
         #self.table_1.setHorizontalHeader(list(map(lambda j: chr(ord('A') + j),range(self.model.columnCount()))))
@@ -123,12 +130,17 @@ class Page4(QWizardPage):
             error = 'You cannot add more than one column at a time.'
             self.showError(error)
     
+    def deleteColumn(self):
+        current_column = self.table_2.columnCount() - 1
+        print(f'current col number is {current_column}')
+        self.table_2.removeColumn(current_column)
+    
     def addRow(self):
         current_row = self.table_2.rowCount()
         self.table_2.insertRow(current_row)
         
     def deleteRow(self):
-        current_row = self.table_2.rowCount()
+        current_row = self.table_2.rowCount() - 1 
         self.table_2.removeRow(current_row)
         
         
@@ -141,14 +153,17 @@ class Page4(QWizardPage):
         print(f'current item is: {self.table_2.currentItem()}')
     
     def setWidgets(self):
-        tb_1_cordinates = [(a.row(),a.column()) for a in self.table_1.selectedIndexes()]
-        tb_2_cordinates = [(a.row(),a.column()) for a in self.table_2.selectedIndexes()]
+        tb_1_coordinates = [(a.row(),a.column()) for a in self.table_1.selectedIndexes()]
+        tb_2_coordinates = [(a.row(),a.column()) for a in self.table_2.selectedIndexes()]
         try:
-            assert(len(tb_1_cordinates) <= len(tb_2_cordinates))
-            for c1,c2 in zip(cycle(tb_1_cordinates),tb_2_cordinates):
-                self.table_2.setItem(c2[0],c2[1],QTableWidgetItem(str(c1)))
-            print(f'table 1 cordinates are: {tb_1_cordinates}')
-            print(f'table 2 cordinates are: {tb_2_cordinates}')
+            assert(len(tb_1_coordinates) <= len(tb_2_coordinates))
+            for c1,c2 in zip(cycle(tb_1_coordinates),tb_2_coordinates):
+                # self.table_2.setItem(c2[0],c2[1],QTableWidgetItem(str(c1)))
+                self.table_2.setItem(c2[0],c2[1],QExportItem(self.table_1.item(c1[0],c1[1])))
+                
+                print(f' coordinate is {self.table_1.item(c1[0],c1[1]).coordinate_name}')
+            print(f'table 1 coordinates are: {tb_1_coordinates}')
+            print(f'table 2 coordinates are: {tb_2_coordinates}')
         except AssertionError:
             error = 'Selected cells in importing table exceed selected cells in exporting table.'
             self.showError(error)
@@ -161,7 +176,7 @@ class Page4(QWizardPage):
                     item = self.table_2.item(row, column)
                     print(item) ##
                     if item is not None:
-                        rowdata.append(str(item.text()))
+                        rowdata.append({'coordinate':item.coordinate,'type':item.value_type})
                     else:
                         rowdata.append('')
                 data.append(rowdata)
@@ -169,6 +184,7 @@ class Page4(QWizardPage):
         frame = pd.DataFrame(data)
         print(data)
         print(frame)
+        return frame
     
     def showError(self, error_message):
        msg = QMessageBox()
@@ -178,3 +194,28 @@ class Page4(QWizardPage):
        msg.setStandardButtons(QMessageBox.Ok)
        msg.exec_()
        
+       
+    def exportToCSV(self):
+       # declare test vars
+        frame_map = self.exportToFrame()
+        file_paths = self.file_paths
+        write_path = self.write_path
+        
+        
+        frame_to_export = pd.DataFrame(columns = frame_map.columns)
+        
+        for file in file_paths:
+            current_read_frame = pd.read_excel(file)
+            current_write_frame = pd.DataFrame(index = frame_map.index, columns = frame_map.columns)
+            
+            for i in range(len(frame_map.values)):
+                for j in range(len(frame_map.columns)):
+                    current_coord = frame_map.iloc[i,j]['coordinate']
+                    current_write_frame.iloc[i,j] = current_read_frame.iloc[current_coord]
+            
+            frame_to_export = frame_to_export.append(current_write_frame)
+            print(current_write_frame)
+            
+        frame_to_export.to_csv(write_path)
+        print(frame_to_export)
+        
