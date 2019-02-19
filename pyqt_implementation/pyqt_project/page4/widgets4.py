@@ -42,9 +42,10 @@ class QCSVItem(QTableWidgetItem):
     
     def __init__(self,coordinate,value):
         super().__init__(str(value))
+        #print(f'trying to call __mro__, result is: {dir(self)}')
         self.value_type = type(value)
         self.coordinate = coordinate
-        self. coordinate_name = chr(ord('A') + coordinate[1]) + str(coordinate[0] + 1)
+        self.coordinate_name = chr(ord('A') + coordinate[1]) + str(coordinate[0] + 1)
     
     
 

@@ -11,7 +11,8 @@ Created on Thu Jan 31 10:04:29 2019
 from page4.widgets4 import (QWizardPage, QTableWidget, QLabel, QGridLayout, 
                             QVBoxLayout, QPushButton, QGroupBox,PandasModel,
                             QTableView, QTableWidgetItem, QtCore, QMessageBox,
-                            cycle, QCSVTableWidget, alphabetize, QExportItem)
+                            cycle, QCSVTableWidget, alphabetize, QExportItem,
+                            QtGui)
 
 import pandas as pd
 
@@ -59,6 +60,8 @@ class Page4(QWizardPage):
         #self.pandaframe = pd.read_excel(self.mac_path)
         self.initWidgets()
         self.initLayout()
+        
+        self.color = 0
         
     def cellname(i, j):
         return f'{chr(ord("A")+j)}{i+1}'
@@ -126,6 +129,15 @@ class Page4(QWizardPage):
         layout.addWidget(b_group,1,1)
         self.setLayout(layout)
     
+    def newColor(self):
+        self.color = (self.color + 190) % 360 
+        print(f'newColor() called and self.color is {self.color}')
+        new_color = QtGui.QColor(1,1,1)
+        new_color.setHsv(self.color,255,255)
+        print(f'in newColor(), and new_color is {new_color}')
+        return new_color
+    
+    
     def addColumn(self):
         current_column = self.table_2.columnCount()
         selected_labels = self.table_1.selectedIndexes()
@@ -167,9 +179,18 @@ class Page4(QWizardPage):
         tb_2_coordinates = [(a.row(),a.column()) for a in self.table_2.selectedIndexes()]
         try:
             assert(len(tb_1_coordinates) <= len(tb_2_coordinates))
+            curr_color = self.newColor()
             for c1,c2 in zip(cycle(tb_1_coordinates),tb_2_coordinates):
                 # self.table_2.setItem(c2[0],c2[1],QTableWidgetItem(str(c1)))
                 self.table_2.setItem(c2[0],c2[1],QExportItem(self.table_1.item(c1[0],c1[1])))
+                
+                # check for current color (because want to reuse)
+                # print(f'color OF TABLE1 ITEM IS: {self.table_1.item(c1[0],c1[1]).background().color().getHsv()}')
+                
+                
+                # adjust colors
+                self.table_1.item(c1[0],c1[1]).setBackground(curr_color)
+                self.table_2.item(c2[0],c2[1]).setBackground(curr_color)
                 
                 print(f' coordinate is {self.table_1.item(c1[0],c1[1]).coordinate_name}')
             print(f'table 1 coordinates are: {tb_1_coordinates}')
