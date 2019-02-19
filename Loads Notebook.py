@@ -455,17 +455,23 @@ for i in largest_group(d):
 
 
 list_of_files = largest_group(d)
-
+'''
 
 # ## Scanning and Scraping Columns from the file list 
 
-# The problem is that surveys often are not formatted identically. One option is to hardcode a set of rules that fail if the survey deviates. A better solution might be to loop through the files, locate a target sheet, and locate target columns. In a ui, the user might supply the target sheet and target columns. The loop could ask for clarigying input when it finds targets too disimilar to the supplied objective.
+# The problem is that surveys often are not formatted identically. One option is 
+# to hardcode a set of rules that fail if the survey deviates. A better solution 
+might be to loop through the files, locate a target sheet, and locate target 
+columns. In a ui, the user might supply the target sheet and target columns. 
+The loop could ask for clarigying input when it finds targets too disimilar to 
+the supplied objective.
 
 # ### Road map:
 # 1. **Sheet Process**
 #     - User input sheet name objective OR group similar targets and suggest
 #     - generate list_of_sheets from list_of_files
-#     - check list_of_sheets for targets that match objective, and request clarification if there are gaps
+#     - check list_of_sheets for targets that match objective, and request 
+        clarification if there are gaps
 # <br>
 # <br>
 # 2. **Column Process**
@@ -475,7 +481,7 @@ list_of_files = largest_group(d)
 # ### 1. Sheet Process 
 
 # Let's explore if we can group sheet names:
-
+'''
 # In[ ]:
 
 

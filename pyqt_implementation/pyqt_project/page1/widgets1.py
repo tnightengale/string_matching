@@ -10,7 +10,8 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtProperty
 from PyQt5.QtWidgets import (QWizardPage, QMainWindow, QGridLayout, QWidget, QTextEdit, QPushButton, 
                              QInputDialog, QMessageBox, QLineEdit, QLabel, QComboBox, 
-                             QSlider, QLCDNumber, QVBoxLayout, QHBoxLayout, QGroupBox)
+                             QSlider, QLCDNumber, QVBoxLayout, QHBoxLayout, QGroupBox,
+                             QFileDialog)
 
 class QIComboBox(QComboBox):
     def __init__(self,parent=None):
