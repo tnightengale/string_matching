@@ -34,19 +34,29 @@ Figure out how to map selected cells in table_1 to selected cells in table_2.
 class Page4(QWizardPage):
     
     #error = QtCore.pyqtSignal()
-    windows_path = r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock3.xlsx"
     mac_path = r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock3.xlsx'
     
-    file_paths = [r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock1.xlsx',
+    mac_file_paths = [r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock1.xlsx',
                   r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock2.xlsx',
                   r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/mock3.xlsx']
-    write_path = r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/test.csv'
+    
+    mac_write_path = r'/Users/tnightengale/Desktop/Projects/string_matching/pyqt_implementation/mock_excels/test.csv'
+    
+    
+    
+    windows_path = r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock3.xlsx"
+    
+    window_file_paths = [r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock1.xlsx",
+                         r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock2.xlsx",
+                         r"\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\mock3.xlsx"]
+    
+    window_write_path = r'C:\Users\TeghanN\Desktop\string_matching\pyqt_implementation\mock_excels\test.csv'
     
     def __init__(self):
         super().__init__()
         #self.error.connect(self.showError)
-        #self.pandaframe = pd.read_excel(self.windows_path)
-        self.pandaframe = pd.read_excel(self.mac_path)
+        self.pandaframe = pd.read_excel(self.windows_path)
+        #self.pandaframe = pd.read_excel(self.mac_path)
         self.initWidgets()
         self.initLayout()
         
@@ -198,8 +208,11 @@ class Page4(QWizardPage):
     def exportToCSV(self):
        # declare test vars
         frame_map = self.exportToFrame()
-        file_paths = self.file_paths
-        write_path = self.write_path
+        #file_paths = self.mac_file_paths
+        #write_path = self.mac_write_path
+        
+        file_paths = self.window_file_paths
+        write_path = self.window_write_path
         
         
         frame_to_export = pd.DataFrame(columns = frame_map.columns)
@@ -210,8 +223,15 @@ class Page4(QWizardPage):
             
             for i in range(len(frame_map.values)):
                 for j in range(len(frame_map.columns)):
-                    current_coord = frame_map.iloc[i,j]['coordinate']
-                    current_write_frame.iloc[i,j] = current_read_frame.iloc[current_coord]
+                    
+                    print(f'frame is {frame_map}') ####
+                    print(f'type of i,j is {(type(i),type(j))}') ####
+                    print(f'frame cell i,j is {frame_map.iloc[i,j]}')
+                    try:
+                        current_coord = frame_map.iloc[i,j]['coordinate']
+                        current_write_frame.iloc[i,j] = current_read_frame.iloc[current_coord]
+                    except TypeError:
+                        current_write_frame.iloc[i,j] = ""
             
             frame_to_export = frame_to_export.append(current_write_frame)
             print(current_write_frame)
