@@ -1,25 +1,6 @@
-,0,1,2
-0,,,
-1,things10,783,68
-2,things10,345,277
-3,things10,602,149
-4,things10,24,68
-5,things10,249,743
-6,things10,783,68
-7,things10,345,277
-0,,,
-1,things23,57,785
-2,things23,608,250
-3,things23,751,54
-4,things23,771,368
-5,things23,799,43
-6,things23,57,785
-7,things23,608,250
-0,,,
-1,things64,489,614
-2,things64,764,778
-3,things64,431,927
-4,things64,130,920
-5,things64,862,322
-6,things64,489,614
-7,things64,764,778
+0;1;2;3
+scenario;scen1;NaN;NaN
+date;08.04.2019;NaN;NaN
+turnaround time;BAH;45;NaN
+turnaround time;AMM;45;NaN
+weight;-5;NaN;NaN

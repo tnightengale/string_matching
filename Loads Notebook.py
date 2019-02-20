@@ -408,7 +408,8 @@ def groupings(list_of_tuples):
     groups = {}
     for i in list_of_tuples:
         if i[1] in groups.keys():
-            groups[i[1]].append(i[0]) # groups = {i[k]:['path1','path2'...], ...}
+            if '.xls' in i[0]:
+                groups[i[1]].append(i[0]) # groups = {i[k]:['path1','path2'...], ...}
         else:
             groups[i[1]] = [i[0]]
         
