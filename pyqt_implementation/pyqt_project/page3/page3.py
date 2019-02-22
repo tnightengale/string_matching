@@ -63,7 +63,7 @@ class Page3(QWizardPage):
         all_sheets = []
         
         self.attribute.emit('test value')
-        
+        self.list_sheets.addItem('balls')
         #print(f'files to use object is: {self.field("files_to_use")}')
         
         '''

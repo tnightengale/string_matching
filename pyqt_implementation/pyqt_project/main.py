@@ -43,8 +43,17 @@ class MagicWizard(QWizard):
         self.Page3.attribute.connect(self.signalTest)
     
     def signalTest(self, value):
-        print(f'signal recieved in qwizard with value {value}')
-        
+        print('signalTest called')
+        #self.Page3.list_sheets.clear()
+        for i in range(self.Page2.list_main.count()):
+            self.Page3.list_sheets.addItem(self.Page2.list_main.item(i))
+            self.Page3.list_sheets.addItem('balls from signalTest')
+            '''
+            Problem is likely that item cannot be reassigned from parent
+            to new widget. Needs to be copied!
+            '''
+            print(self.Page2.list_main.item(i))
+        print(f'count of self.Page3.list_sheets is {self.Page3.list_sheets.count()}')
     def passWidgets(self,sending_page, recieving_page, sending_attribute, receiving_attribute):
         #self.recieving_page.recieving_attribute = self.sending_page.sending_attribute
         pass
