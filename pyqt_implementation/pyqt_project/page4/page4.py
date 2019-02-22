@@ -133,7 +133,7 @@ class Page4(QWizardPage):
         self.color = (self.color + 190) % 360 
         print(f'newColor() called and self.color is {self.color}')
         new_color = QtGui.QColor(1,1,1)
-        new_color.setHsv(self.color,255,255)
+        new_color.setHsv(self.color,60,255)
         print(f'in newColor(), and new_color is {new_color}')
         return new_color
     
