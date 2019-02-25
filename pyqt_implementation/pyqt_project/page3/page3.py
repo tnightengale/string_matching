@@ -10,7 +10,7 @@ from PyQt5.QtCore import pyqtSignal
 from page3.widgets3 import (QWizardPage, QLineEdit, QLabel, QVBoxLayout,
                             QHBoxLayout, QGroupBox, QGridLayout,
                             QTextEdit, QPushButton, QListWidget,
-                            MoveableListWidget,
+                            MoveableListWidget,Counter,
                             ShortenedListItem, QMessageBox)
 
 
@@ -24,6 +24,8 @@ class Page3(QWizardPage):
         self.initWidgets()
         self.initLayout()
         self.registerField("sheet_to_use*",self.list_main)
+        self.list_of_file_paths = []
+        
         
         
     def initWidgets(self):
@@ -39,11 +41,13 @@ class Page3(QWizardPage):
         self.label_2.setText('<h2> Sheets to Accept </h2>')
         
         self.button_1 = QPushButton()
-        self.button_1.setText('List Sheets')
-        self.button_1.clicked.connect(self.findSheets)
+        self.button_1.setText('Load Selected Sheets')
+        self.button_1.clicked.connect(self.checkSheets)
     
         self.list_main = MoveableListWidget()
         self.list_sheets =  MoveableListWidget()
+        
+        
         
     def initLayout(self):
         layout = QGridLayout()
@@ -54,37 +58,41 @@ class Page3(QWizardPage):
         layout.addWidget(self.list_sheets, 3, 1)
         self.setLayout(layout)
     
-    def findSheets(self):
-        '''
-        Called from button_1 ("List Sheets").
-        Lists the sheets available in the "files_to_use" field
-        created on Page2.
-        '''
-        all_sheets = []
-        
-        self.attribute.emit('test value')
-        self.list_sheets.addItem('balls')
-        #print(f'files to use object is: {self.field("files_to_use")}')
-        
-        '''
-        for index in range(self.field('files_to_use').count()):    
-            try:
-                file = self.field('files_to_use').item(index).full_path
-            
-                sheets_found = list(pd.read_excel(file, sheet_name = None).keys())
-                
-                self.list_sheets.addItem(' '.join(sheets_found))
-                
-                all_sheets += sheets_found
-                
-            except Exception as e:
-                print(e)
-                
-            print(all_sheets)
-        return
-        '''
     
+    
+    def loadExcelFiles(self):
+        '''
+        '''
+        self.excel_dict = {}
+        for file in self.list_of_file_paths:
+            try:
+                self.excel_dict[file] = pd.read_excel(file, sheet_name = None)
+            except Exception as e:
+                error = f'The file {file} could not be read. Error: {e}'
+                self.showError(error)
+                
+                
+    def displaySheets(self):
+        '''
+        Called from QWizard.transitionToPage3().
+        Lists the sheets available from the selected
+        files on Page2.
+        '''
+        temp_tuples = list(self.excel_dict.items())
+        temp_list_of_key_lists = [i[1].keys() for i in temp_tuples]
+        temp_flattened_list = [item for sublist in temp_list_of_key_lists for item in sublist]
         
+        ordered_sheets = list(Counter(temp_flattened_list).keys())
+        
+        self.QSheets = {}
+        for sheet_name in ordered_sheets:
+            
+            self.list_sheets.addItem(sheet_name)
+            
+    def checkSheets(self):
+        return 
+    
+    
     def showError(self, error_message):
        msg = QMessageBox()
        msg.setIcon(QMessageBox.Warning)
@@ -92,5 +100,5 @@ class Page3(QWizardPage):
        msg.setWindowTitle("Error")
        msg.setStandardButtons(QMessageBox.Ok)
        msg.exec_()
-        
+       
         

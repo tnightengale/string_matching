@@ -8,7 +8,7 @@ Created on Fri Feb  1 09:09:12 2019
 from page2.widgets2 import (QWizardPage, QLineEdit, QLabel, QVBoxLayout,
                             QHBoxLayout, QGroupBox, QGridLayout,
                             QTextEdit, QPushButton, QListWidget,
-                            MoveableListWidget,
+                            MoveableListWidget, QListWidgetItem,
                             ShortenedListItem, QMessageBox)
 
 from page2.functions2 import (runrec, groupings)
@@ -88,7 +88,11 @@ class Page2(QWizardPage):
              
              # add files names to each created listWidget
              for file_path in self.grouping[a_key]:
-                    self.QLists['list_' + str(a_key)].addItem(ShortenedListItem(file_path))
+                 
+                 curr_item = QListWidgetItem(file_path.split('\\')[-1])
+                 curr_item.setWhatsThis(file_path)
+                 
+                 self.QLists['list_' + str(a_key)].addItem(curr_item)
         
         # show warning if no excel files in folder_path
         if len(self.grouping) == 0:
@@ -96,8 +100,16 @@ class Page2(QWizardPage):
             self.showError(error)
     
     def check(self):
-        print(f'REGISTERED FIELD "files_to_use" is: {self.field("files_to_use")}')
-        
+        for i in range(self.list_main.count()):
+            print(f'main list item are: {self.list_main.item(i)}')
+            print(f'whatthis attribute is: {self.list_main.item(i).whatsThis()}')
+        for a_key in self.grouping:
+            # create widget and add to layout
+            for i in range(self.QLists['list_' + str(a_key)].count()):
+                print(f"group items are: {self.QLists['list_' + str(a_key)].item(i)}")
+                print(f"whatthis attribute is: {self.QLists['list_' + str(a_key)].item(i).whatsThis()}")
+             
+             
     def showError(self, error_message):
        msg = QMessageBox()
        msg.setIcon(QMessageBox.Warning)

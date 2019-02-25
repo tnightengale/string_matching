@@ -9,11 +9,13 @@ from PyQt5.QtWidgets import QWizard, QApplication
 from PyQt5.QtCore import pyqtSignal
 from page1.page1 import Page1
 from page2.page2 import Page2
+from page2.widgets2 import QListWidgetItem
 from page3.page3 import Page3
 from page4.page4 import Page4
 
 
 class MagicWizard(QWizard):
+    
     
     
     def __init__(self):
@@ -39,21 +41,56 @@ class MagicWizard(QWizard):
         #self.addPage(Page3())
         #self.addPage(Page4())
         
-        # create signal to init file groupings on Page2 on click of Page1 'Next'
-        self.Page3.attribute.connect(self.signalTest)
+        # connect ListWdigetChanged signal to slot signalTest
+        #self.Page2.list_main.ListWidgetChanged.connect(self.signalTest)
     
-    def signalTest(self, value):
-        print('signalTest called')
-        #self.Page3.list_sheets.clear()
+    
+        self.button(QWizard.NextButton).clicked.connect(self.nextController)
+        
+    def nextController(self):
+        '''
+        Slot for the NextButton signal. Controller to
+        call transition pages.
+        '''
+        current_page = str(self.currentPage())
+        
+        if "Page2" in current_page:
+            self.transitionToPage2()
+            
+        elif "Page3" in current_page:
+            self.transitionToPage3()
+            
+        elif "Page4" in current_page:
+            self.transitionToPage4()
+            
+        return False
+      
+    def transitionToPage2(self):
+        print('TTP2 called')
+        
+    def transitionToPage3(self):
+        print('TTP3 called')
+        
+        # create list of file_paths to use
+        self.Page3.list_of_file_paths = []
         for i in range(self.Page2.list_main.count()):
-            self.Page3.list_sheets.addItem(self.Page2.list_main.item(i))
-            self.Page3.list_sheets.addItem('balls from signalTest')
-            '''
-            Problem is likely that item cannot be reassigned from parent
-            to new widget. Needs to be copied!
-            '''
-            print(self.Page2.list_main.item(i))
-        print(f'count of self.Page3.list_sheets is {self.Page3.list_sheets.count()}')
+            current_file_path = self.Page2.list_main.item(i).whatsThis()
+            self.Page3.list_of_file_paths.append(current_file_path)
+        
+        # load files into pd.frames
+        #print(self.Page3.list_of_file_paths)
+        self.Page3.loadExcelFiles()
+        
+        # display available sheets
+        self.Page3.displaySheets()
+    
+    
+    def transitionToPage4(self):
+        print('TTP4 called')
+        
+        
+        
+    
     def passWidgets(self,sending_page, recieving_page, sending_attribute, receiving_attribute):
         #self.recieving_page.recieving_attribute = self.sending_page.sending_attribute
         pass

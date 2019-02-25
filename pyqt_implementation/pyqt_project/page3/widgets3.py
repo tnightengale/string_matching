@@ -13,6 +13,8 @@ from PyQt5.QtWidgets import (QWizardPage, QMainWindow, QGridLayout, QWidget, QTe
                              QSlider, QLCDNumber, QVBoxLayout, QHBoxLayout, QGroupBox,
                              QListWidget, QAbstractItemView, QTableWidget, QListWidgetItem,
                              QMessageBox)
+from collections import Counter
+
 
 class MoveableListWidget(QListWidget):
     

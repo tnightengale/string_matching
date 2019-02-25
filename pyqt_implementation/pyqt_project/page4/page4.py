@@ -56,8 +56,8 @@ class Page4(QWizardPage):
     def __init__(self):
         super().__init__()
         #self.error.connect(self.showError)
-        self.pandaframe = pd.read_excel(self.windows_path)
-        #self.pandaframe = pd.read_excel(self.mac_path)
+        #self.pandaframe = pd.read_excel(self.windows_path)
+        self.pandaframe = pd.read_excel(self.mac_path)
         self.initWidgets()
         self.initLayout()
         
@@ -229,11 +229,11 @@ class Page4(QWizardPage):
     def exportToCSV(self):
        # declare test vars
         frame_map = self.exportToFrame()
-        #file_paths = self.mac_file_paths
-        #write_path = self.mac_write_path
+        file_paths = self.mac_file_paths
+        write_path = self.mac_write_path
         
-        file_paths = self.window_file_paths
-        write_path = self.window_write_path
+        #file_paths = self.window_file_paths
+        #write_path = self.window_write_path
         
         
         frame_to_export = pd.DataFrame(columns = frame_map.columns)
