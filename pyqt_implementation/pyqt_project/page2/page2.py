@@ -28,7 +28,8 @@ class Page2(QWizardPage):
         text = '''
         1. Click "Group Files" to view excel files in the provided folder
         2. Drag and drop files to the "Files To Use" list
-        3. Click "Next" to proceed with the choosen files
+        3. Click on any given file name in "Files To Use" to enable "Next"
+        4. Click "Next" to proceed with the choosen files
         '''
         self.label_1.setText(text)
         
@@ -39,9 +40,9 @@ class Page2(QWizardPage):
         self.button_1.setText('Group Files')
         self.button_1.clicked.connect(self.initGroupings)
         
-        self.button_2 = QPushButton()
-        self.button_2.setText('check reg field')
-        self.button_2.clicked.connect(self.check)
+        #self.button_2 = QPushButton()
+        #self.button_2.setText('check reg field')
+        #self.button_2.clicked.connect(self.check)
     
         self.list_main = MoveableListWidget()
         
@@ -53,7 +54,7 @@ class Page2(QWizardPage):
         layout = QGridLayout()
         layout.addWidget(self.label_1, 0, 0, 1, 2)
         layout.addWidget(self.button_1, 1, 0)
-        layout.addWidget(self.button_2, 1, 1)
+        #layout.addWidget(self.button_2, 1, 1)
         layout.addWidget(self.label_2, 2, 0, 1, 1)
         layout.addWidget(self.list_main, 3, 0, 1, 1)
         layout.addWidget(self.list_group, 3, 1, 1, 4)

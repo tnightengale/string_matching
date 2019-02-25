@@ -123,13 +123,13 @@ class Page4(QWizardPage):
         b_layout.addWidget(self.button_6)
         b_group.setLayout(b_layout)
         
-        self.layout = QGridLayout()
-        self.layout.addWidget(self.label_1,0,0)
-        self.layout.addWidget(self.label_2,0,2)
-        self.layout.addWidget(self.table_1,1,0)
-        self.layout.addWidget(self.table_2,1,2)
-        self.layout.addWidget(b_group,1,1)
-        self.setLayout(self.layout)
+        layout = QGridLayout()
+        layout.addWidget(self.label_1,0,0)
+        layout.addWidget(self.label_2,0,2)
+        layout.addWidget(self.table_1,1,0)
+        layout.addWidget(self.table_2,1,2)
+        layout.addWidget(b_group,1,1)
+        self.setLayout(layout)
     
     def newColor(self):
         self.color = (self.color + 190) % 360 
@@ -250,30 +250,25 @@ class Page4(QWizardPage):
                 print(f'could not load {file}')
             
             else:
+                current_read_frame = self.excel_dict[file][list(matched_sheets)[0]]
                 
-                try:
-                    
-                    current_read_frame = self.excel_dict[file][list(matched_sheets)[0]]
-                    
-                    current_write_frame = pd.DataFrame(index = frame_map.index, columns = frame_map.columns)
-                    
-                    for i in range(len(frame_map.values)):
-                        for j in range(len(frame_map.columns)):
-                            
-                            print(f'frame is {frame_map}') ####
-                            print(f'type of i,j is {(type(i),type(j))}') ####
-                            print(f'frame cell i,j is {frame_map.iloc[i,j]}')
-                            try:
-                                current_coord = frame_map.iloc[i,j]['coordinate']
-                                current_write_frame.iloc[i,j] = current_read_frame.iloc[current_coord]
-                            except TypeError:
-                                current_write_frame.iloc[i,j] = ""
-                    
-                    frame_to_export = frame_to_export.append(current_write_frame)
-                    print(current_write_frame)
+                current_write_frame = pd.DataFrame(index = frame_map.index, columns = frame_map.columns)
                 
-                except Exception as e:
-                    print(f'ERROR OCCURRED: {e}')
+                for i in range(len(frame_map.values)):
+                    for j in range(len(frame_map.columns)):
+                        
+                        print(f'frame is {frame_map}') ####
+                        print(f'type of i,j is {(type(i),type(j))}') ####
+                        print(f'frame cell i,j is {frame_map.iloc[i,j]}')
+                        try:
+                            current_coord = frame_map.iloc[i,j]['coordinate']
+                            current_write_frame.iloc[i,j] = current_read_frame.iloc[current_coord]
+                        except TypeError:
+                            current_write_frame.iloc[i,j] = ""
+                
+                frame_to_export = frame_to_export.append(current_write_frame)
+                print(current_write_frame)
+            
         frame_to_export.to_csv(write_path)
         print(frame_to_export)
         

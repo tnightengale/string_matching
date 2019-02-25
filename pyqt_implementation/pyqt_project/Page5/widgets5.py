@@ -36,10 +36,7 @@ class QCSVTableWidget(QTableWidget):
             for j in range(self._cols):
                 self.setItem(i,j,QCSVItem(coordinate = (i,j),\
                                                   value = self._data.iloc[i,j]))
-        print('readData called in QCSVTABLEWISDGTTASD')
-        for i in range(self._rows):
-            for j in range(self._cols):
-                print(self.item(i,j).text())
+    
     
 class QCSVItem(QTableWidgetItem):
     
